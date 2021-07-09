@@ -1,0 +1,82 @@
+1. Clear the env by unloading any nvidia drivers loaded in kernel (on the host)
+
+2. Drrver installation steps
+    a. Change the entrypoint.sh to use the kernel version available in coreos. In order to get the kernel version, run this command on the host (edge) --> uname -r | cut -d- -f1
+    b. Hardcode this directly in entrypoint.sh 
+        Example: KERNEL_SRC_ARCHIVE="linux-4.19.50.tar.xz" (Note: 4.19.50 is the kernel version that I had)
+
+    c. Hardcode the nvidia driver version as 440.100 as nvidia seems to have this version as the max supported version for kernel version 4.19.50
+
+    d. Build the docker image. (docker build -t <your tag> .)
+
+    e. To install the drivers, run the image inside the edge directly. Remove .cache file from /opt/nvidia on host
+
+        docker run --rm -it --privileged -v /dev:/dev -v /opt/nvidia:/usr/local/nvidia -v /root:/root senthil_nvidia:1.0 bash
+        [Note: this installs the driver on the host (/opt/nvidia)] --> Do not forget to do "./entrypoint.sh" Ensure execute permissions are set.
+        
+        OR
+        
+        kubectl create -f daemonset.yaml (ensure you change your docker image in this yaml file)
+
+    f. At the end of the driver installation, you will find "nvidia-smi" output
+
+3. The driver container places the drivers in /opt/nvidia on the host. It also sets up ld cache (Look for several folders created)
+
+4. Do the following on the host
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/nvidia/lib64
+        export PATH=$PATH:/opt/nvidia/bin
+
+5. Run ./nvidia-smi. You will see the same output as you saw in step 2.g. Note that the driver that we set in step 2.d is what is visible in this output. Also note that cuda version is set to 10.1
+
+6. To verify if a container is using GPU, pick a tensorflow image (eg: tensorflow/tensorflow:1.14.0-gpu-py3)
+
+    a. Run the container
+        docker run --rm -it -v /opt/nvidia/lib64:/usr/nvidia/lib64 -v /opt/nvidia/bin:/usr/bin/nvidia --privileged tensorflow/tensorflow:1.14.0-gpu-py3 bash
+
+    b. Do the following inside the container (It is best if you do these inside the dockerfile)            
+            export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/nvidia/lib64
+            export PATH=$PATH:/usr/bin/nvidia
+
+    c. Run nvidia-smi. Same output as Step 5
+
+    d. python
+        >> import tensorflow as tf
+        >> sess = tf.Session()
+
+    e. Note that the above code allocates GPU
+
+    f. To check if the allocation is visible in nvidia-smi, check "nvidia-smi" on the host as given in step 4 and 5
+
+
+7. To run the same on Kubernetes
+    
+    a. Use k8s-nvidia-deviceplugin.yaml to install the plugin
+        kubectl apply -f k8s-nvidia-deviceplugin.yaml
+
+    b. The plugin logs should look like this. Especally "nvidia0, 1"
+
+I0303 05:32:56.747336       1 nvidia_gpu.go:40] device-plugin started
+I0303 05:32:56.749923       1 manager.go:79] Found Nvidia GPU "nvidia0"
+I0303 05:32:56.749942       1 manager.go:79] Found Nvidia GPU "nvidia1"
+I0303 05:32:56.749978       1 manager.go:130] will use alpha API
+I0303 05:32:56.749984       1 manager.go:144] starting device-plugin server at: /device-plugin/nvidiaGPU-1614749576.sock
+I0303 05:32:56.750683       1 manager.go:173] device-plugin server started serving
+I0303 05:32:57.050043       1 manager.go:177] falling back to v1beta1 API
+I0303 05:32:57.050377       1 manager.go:185] device-plugin registered with the kubelet
+I0303 05:32:57.051058       1 beta_plugin.go:38] device-plugin: ListAndWatch start
+I0303 05:32:57.051067       1 beta_plugin.go:46] ListAndWatch: send devices &ListAndWatchResponse{Devices:[&Device{ID:nvidia1,Health:Healthy,} &Device{ID:nvidia0,Health:Healthy,}],}
+
+    c. Run your container and ensure the following are set in your deployment yaml
+        1. nvidia.com/gpu
+        2. Volume mount points for /opt/nvidia/bin and /opt/nvidia/lib64
+        3. Use the example test_gpu_with_limits.yaml
+
+    d. kubectl exec -it <your pod> bash
+    e. Try the steps from 6.b to verify the GPU usage
+
+
+
+
+
+
+

@@ -1,0 +1,28 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nvidia-tensor-pod
+spec:
+  containers:
+  - name: nvidia
+    image: 'tensorflow/tensorflow:1.14.0-gpu-py3'
+    command: ["sleep"]
+    args: ["100000"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    volumeMounts:
+    - mountPath: /usr/bin/nvidia
+      name: binaries
+    - mountPath: /usr/nvidia/lib64
+      name: libraries
+  restartPolicy: Never
+  volumes:
+  - name: binaries
+    hostPath:
+      path: /opt/nvidia/bin
+  - name: libraries
+    hostPath:
+      path: /opt/nvidia/lib64
+
+
