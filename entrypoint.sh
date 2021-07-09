@@ -265,7 +265,7 @@ update_host_ld_cache() {
 }
 
 main() {
-  load_etc_os_release
+  #load_etc_os_release
   if check_cached_version; then
     configure_cached_installation
     verify_nvidia_installation
