@@ -276,7 +276,7 @@ main() {
     download_kernel_src
     configure_nvidia_installation_dirs
     download_nvidia_installer
-    configure_kernel_src
+    #configure_kernel_src
     run_nvidia_installer
     update_cached_version
     verify_nvidia_installation
