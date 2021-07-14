@@ -201,7 +201,7 @@ configure_nvidia_installation_dirs() {
   #mount -t overlay -o lowerdir=/lib/modules/"$(uname -r)"/video,upperdir=drivers,workdir=drivers-workdir none /lib/modules/"$(uname -r)"/video
 
   # Populate ld.so.conf to avoid warning messages in nvidia-installer logs.
-  update_container_ld_cache
+  #update_container_ld_cache
 
   # Install an exit handler to cleanup the overlayfs mount points.
   #trap "{ umount /lib/modules/\"$(uname -r)\"/video; umount ./lib/x86_64-linux-gnu ; umount ./bin; }" EXIT
