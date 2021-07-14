@@ -181,6 +181,7 @@ configure_nvidia_installation_dirs() {
   # `nvidia-modprobe` is accessible outside the installer container
   # filesystem.
   mkdir -p bin bin-workdir
+  mkdir -p /usr/bin
   mount -t overlay -o lowerdir=/usr/bin,upperdir=bin,workdir=bin-workdir none /usr/bin
 
   # nvidia-installer does not provide an option to configure the
