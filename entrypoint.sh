@@ -226,7 +226,7 @@ run_nvidia_installer() {
   #fi
   
   pushd "${NVIDIA_INSTALL_DIR_CONTAINER}"
-  sh NVIDIA-Linux-x86_64-460.73.01.run -x
+  sh NVIDIA-Linux-x86_64-460.73.01.run --extract-only
   pushd NVIDIA-Linux-x86_64-460.73.01
   IGNORE_MISSING_MODULE_SYMVERS=1 \
   ./nvidia-installer \
