@@ -182,7 +182,7 @@ configure_nvidia_installation_dirs() {
   # filesystem.
   mkdir -p bin bin-workdir
   mkdir -p ./bin
-  mount -t overlay -o lowerdir=/usr/bin,upperdir=bin,workdir=bin-workdir none ./bin
+  #mount -t overlay -o lowerdir=/usr/bin,upperdir=bin,workdir=bin-workdir none ./bin
 
   # nvidia-installer does not provide an option to configure the
   # installation path of libraries such as libnvidia-ml.so. The following
@@ -190,7 +190,7 @@ configure_nvidia_installation_dirs() {
   # installer container filesystem.
   mkdir -p lib64 lib64-workdir
   mkdir -p ./lib/x86_64-linux-gnu
-  mount -t overlay -o lowerdir=/usr/lib/x86_64-linux-gnu,upperdir=lib64,workdir=lib64-workdir none ./lib/x86_64-linux-gnu
+  #mount -t overlay -o lowerdir=/usr/lib/x86_64-linux-gnu,upperdir=lib64,workdir=lib64-workdir none ./lib/x86_64-linux-gnu
 
   # nvidia-installer does not provide an option to configure the
   # installation path of driver kernel modules such as nvidia.ko. The following
@@ -198,13 +198,13 @@ configure_nvidia_installation_dirs() {
   # installer container filesystem.
   mkdir -p drivers drivers-workdir
   mkdir -p /lib/modules/"$(uname -r)"/video
-  mount -t overlay -o lowerdir=/lib/modules/"$(uname -r)"/video,upperdir=drivers,workdir=drivers-workdir none /lib/modules/"$(uname -r)"/video
+  #mount -t overlay -o lowerdir=/lib/modules/"$(uname -r)"/video,upperdir=drivers,workdir=drivers-workdir none /lib/modules/"$(uname -r)"/video
 
   # Populate ld.so.conf to avoid warning messages in nvidia-installer logs.
   update_container_ld_cache
 
   # Install an exit handler to cleanup the overlayfs mount points.
-  trap "{ umount /lib/modules/\"$(uname -r)\"/video; umount ./lib/x86_64-linux-gnu ; umount ./bin; }" EXIT
+  #trap "{ umount /lib/modules/\"$(uname -r)\"/video; umount ./lib/x86_64-linux-gnu ; umount ./bin; }" EXIT
   popd
 }
 
