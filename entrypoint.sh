@@ -283,12 +283,12 @@ main() {
     configure_nvidia_installation_dirs
     download_nvidia_installer
     #configure_kernel_src
-    run_nvidia_installer
-    update_cached_version
-    verify_nvidia_installation
-    info "Finished installing the drivers."
+    #run_nvidia_installer
+    #update_cached_version
+    #verify_nvidia_installation
+    #info "Finished installing the drivers."
   fi
-  update_host_ld_cache
+  #update_host_ld_cache
 }
 
 main "$@"
