@@ -224,9 +224,10 @@ run_nvidia_installer() {
   #if ! grep -q -w ipmi_devintf /proc/modules; then
   #  insmod `find /root/lib/modules -iname ipmi_devintf.ko`
   #fi
-  pushd "${NVIDIA_INSTALL_DIR_CONTAINER}"
+  sh NVIDIA-Linux-x86_64-460.73.01.run -x
+  pushd "${NVIDIA_INSTALL_DIR_CONTAINER}/NVIDIA-Linux-x86_64-460.73.01"
   IGNORE_MISSING_MODULE_SYMVERS=1 \
-  sh "${NVIDIA_INSTALLER_RUNFILE}" \
+  ./nvidia-installer \
     --kernel-source-path="${KERNEL_SRC_DIR}" \
     --no-drm \
     --no-opengl-files \
