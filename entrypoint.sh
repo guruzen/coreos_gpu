@@ -156,7 +156,7 @@ download_kernel_src() {
 configure_kernel_src() {
   info "Configuring kernel sources"
   pushd "${KERNEL_SRC_DIR}"
-  zcat /proc/config.gz > .config
+  #zcat /proc/config.gz > .config
   make olddefconfig
   make modules_prepare
 
@@ -218,12 +218,12 @@ download_nvidia_installer() {
 run_nvidia_installer() {
   info "Running NVIDIA installer"
   # Load deps
-  if ! grep -q -w ipmi_msghandler /proc/modules; then
-    insmod `find /root/lib/modules -iname ipmi_msghandler.ko`
-  fi
-  if ! grep -q -w ipmi_devintf /proc/modules; then
-    insmod `find /root/lib/modules -iname ipmi_devintf.ko`
-  fi
+  #if ! grep -q -w ipmi_msghandler /proc/modules; then
+  #  insmod `find /root/lib/modules -iname ipmi_msghandler.ko`
+  #fi
+  #if ! grep -q -w ipmi_devintf /proc/modules; then
+  #  insmod `find /root/lib/modules -iname ipmi_devintf.ko`
+  #fi
   pushd "${NVIDIA_INSTALL_DIR_CONTAINER}"
   IGNORE_MISSING_MODULE_SYMVERS=1 \
   sh "${NVIDIA_INSTALLER_RUNFILE}" \
