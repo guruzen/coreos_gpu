@@ -227,11 +227,8 @@ run_nvidia_installer() {
   
   pushd "${NVIDIA_INSTALL_DIR_CONTAINER}"
   TMPDIR=./ \
-  sh NVIDIA-Linux-x86_64-460.73.01.run --extract-only
-  pushd NVIDIA-Linux-x86_64-460.73.01
   IGNORE_MISSING_MODULE_SYMVERS=1 \
-  
-  sh nvidia-installer \
+  sh NVIDIA-Linux-x86_64-460.73.01.run \
     --kernel-source-path="${KERNEL_SRC_DIR}" \
     --no-drm \
     --no-opengl-files \
